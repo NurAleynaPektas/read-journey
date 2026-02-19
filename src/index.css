@@ -1,0 +1,61 @@
+
+:root {
+  /* Colors */
+  --color-bg: #1f1f1f;
+  --color-surface: #262626;
+  --color-text: #ffffff;
+  --color-text-muted: #686868;
+  --color-border: #e3e3e34d;
+
+  --color-primary: #4f92f7;
+  --color-success: #30b94d;
+
+  /* Radius */
+  --radius-card: 18px;
+  --radius-input: 12px;
+  --radius-pill: 999px;
+
+  /* Spacing */
+  --space-xs: 6px;
+  --space-sm: 10px;
+  --space-md: 16px;
+  --space-lg: 22px;
+
+  /* Font */
+  --font-main: "Inter", sans-serif;
+}
+
+/*RESET*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Helpers */
+
+.container {
+  width: 100%;
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 26px;
+  }
+}
+
+@media (min-width: 1020px) {
+  .container {
+    padding: 32px;
+  }
+}
