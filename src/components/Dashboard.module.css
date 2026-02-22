@@ -1,0 +1,112 @@
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+
+.panelTitle {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.filters {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  display: grid;
+  gap: 6px;
+}
+
+.input {
+  height: 42px;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0 12px;
+  color: var(--color-text);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.applyBtn {
+  height: 44px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--color-success);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.infoBox {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.infoText {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.quote {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.quoteText {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.quoteAuthor {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/*Tablet Desktop*/
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 320px 1fr;
+    align-items: start;
+  }
+}
+
+@media (min-width: 1020px) {
+  .grid {
+    grid-template-columns: 360px 1fr;
+    gap: 20px;
+  }
+}
