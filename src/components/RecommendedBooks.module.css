@@ -20,7 +20,12 @@
   display: flex;
   gap: 8px;
 }
-
+.pageIndicator {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  min-width: 50px;
+  text-align: center;
+}
 .pageBtn {
   width: 40px;
   height: 40px;
