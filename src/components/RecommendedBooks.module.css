@@ -78,7 +78,28 @@
   font-size: 12px;
   color: var(--color-text-muted);
 }
+.loading {
+  margin-top: 20px;
+  color: var(--color-text-muted);
+}
 
+.cardBtn {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.coverImg {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  background: rgba(255, 255, 255, 0.06);
+}
 /* Tablet */
 @media (min-width: 768px) {
   .grid {

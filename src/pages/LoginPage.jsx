@@ -4,13 +4,11 @@ import * as Yup from "yup";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-
 import { useDispatch } from "react-redux";
 import { setAuth } from "../features/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
+import { signIn } from "../api/auth";
 import s from "./LoginPage.module.css";
 
 const emailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
@@ -34,19 +32,23 @@ export default function LoginPage() {
   const handleSubmit = async (values, actions) => {
     setLoading(true);
     try {
-      const cred = await signInWithEmailAndPassword(
-        auth,
-        values.email,
-        values.password,
-      );
+      const data = await signIn(values);
 
-      const token = await cred.user.getIdToken();
-      const name = cred.user.displayName || "";
+      const token = data?.token;
+      const refreshToken = data?.refreshToken;
+
+      if (!token) throw new Error("Token missing from response");
+
+      localStorage.setItem("rj_token", token);
+      if (refreshToken) localStorage.setItem("rj_refreshToken", refreshToken);
 
       dispatch(
         setAuth({
           token,
-          user: { uid: cred.user.uid, email: cred.user.email, name },
+          user: {
+            name: data?.name || "",
+            email: data?.email || values.email,
+          },
         }),
       );
 
@@ -61,7 +63,7 @@ export default function LoginPage() {
     } catch (err) {
       iziToast.error({
         title: "Error",
-        message: err?.message || "Login failed",
+        message: err?.response?.data?.message || err?.message || "Login failed",
         position: "topRight",
       });
     } finally {

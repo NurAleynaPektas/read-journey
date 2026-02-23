@@ -1,41 +1,54 @@
-import { useState, useEffect } from "react";
-import s from "./RecommendedBooks.module.css";
+import { useEffect, useState } from "react";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 
-const TOTAL_PAGES = 5;
+import { getRecommendedBooks } from "../api/books";
+import s from "./RecommendedBooks.module.css";
 
 export default function RecommendedBooks() {
   const [page, setPage] = useState(1);
+  const limit = 8;
+
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    let alive = true;
+
+    async function run() {
       setLoading(true);
+      try {
+        const data = await getRecommendedBooks({ page, limit });
 
-      console.log("Fetching page:", page);
+        if (!alive) return;
+console.log("RECOMMEND RESPONSE:", data);
+console.log("FIRST BOOK:", data?.results?.[0]);
+        setBooks(Array.isArray(data?.results) ? data.results : []);
+        setTotalPages(Number(data?.totalPages) || 1);
+      } catch (err) {
+        if (!alive) return;
+        iziToast.error({
+          title: "Error",
+          message:
+            err?.response?.data?.message ||
+            err?.message ||
+            "Failed to load recommended books",
+          position: "topRight",
+        });
+      } finally {
+        if (alive) setLoading(false);
+      }
+    }
 
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      const mock = Array.from({ length: 8 }).map((_, i) => ({
-        id: `${page}-${i + 1}`,
-        title: `Book ${i + 1} (Page ${page})`,
-        author: `Author ${i + 1}`,
-      }));
-
-      setBooks(mock);
-      setLoading(false);
+    run();
+    return () => {
+      alive = false;
     };
-
-    fetchBooks();
   }, [page]);
 
-  const handlePrev = () => {
-    if (page > 1) setPage((p) => p - 1);
-  };
-
-  const handleNext = () => {
-    if (page < TOTAL_PAGES) setPage((p) => p + 1);
-  };
+  const prevDisabled = page === 1 || loading;
+  const nextDisabled = page === totalPages || loading;
 
   return (
     <div className={s.wrap}>
@@ -45,20 +58,20 @@ export default function RecommendedBooks() {
         <div className={s.pagination}>
           <button
             className={s.pageBtn}
-            onClick={handlePrev}
-            disabled={page === 1 || loading}
+            onClick={() => setPage((p) => p - 1)}
+            disabled={prevDisabled}
           >
             ←
           </button>
 
           <span className={s.pageIndicator}>
-            {page} / {TOTAL_PAGES}
+            {page} / {totalPages}
           </span>
 
           <button
             className={s.pageBtn}
-            onClick={handleNext}
-            disabled={page === TOTAL_PAGES || loading}
+            onClick={() => setPage((p) => p + 1)}
+            disabled={nextDisabled}
           >
             →
           </button>
@@ -66,16 +79,23 @@ export default function RecommendedBooks() {
       </div>
 
       {loading ? (
-        <p style={{ marginTop: 20 }}>Loading...</p>
+        <p className={s.loading}>Loading...</p>
       ) : (
         <ul className={s.grid}>
           {books.map((b) => (
-            <li key={b.id} className={s.card}>
-              <div className={s.cover} />
-              <div className={s.meta}>
-                <p className={s.bookTitle}>{b.title}</p>
-                <p className={s.bookAuthor}>{b.author}</p>
-              </div>
+            <li key={b._id} className={s.card}>
+              <button type="button" className={s.cardBtn}>
+                <img
+                  className={s.coverImg}
+                  src={b.imageUrl}
+                  alt={b.title}
+                  loading="lazy"
+                />
+                <div className={s.meta}>
+                  <p className={s.bookTitle}>{b.title}</p>
+                  <p className={s.bookAuthor}>{b.author}</p>
+                </div>
+              </button>
             </li>
           ))}
         </ul>
