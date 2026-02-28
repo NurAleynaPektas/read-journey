@@ -1,3 +1,4 @@
+import AddBook from "../components/AddBook";
 import s from "./Dashboard.module.css";
 
 export default function Dashboard({ variant = "recommended", children }) {
@@ -39,6 +40,33 @@ export default function Dashboard({ variant = "recommended", children }) {
                 “A reader lives a thousand lives before he dies.”
               </p>
               <p className={s.quoteAuthor}>— George R.R. Martin</p>
+            </div>
+          </>
+        ) : variant === "library" ? (
+          <>
+            <AddBook />
+
+            <div className={s.infoBox}>
+              <p className={s.infoText}>
+                Add your own books here or go to Recommended to add suggested
+                books to your library.
+              </p>
+              <a className={s.link} href="/recommended">
+                Go to Recommended
+              </a>
+            </div>
+          </>
+        ) : variant === "reading" ? (
+          <>
+            <h3 className={s.panelTitle}>Reading</h3>
+
+            <div className={s.infoBox}>
+              <p className={s.infoText}>
+                Track your reading progress here. (We will implement this next.)
+              </p>
+              <a className={s.link} href="/library">
+                Back to My library
+              </a>
             </div>
           </>
         ) : (

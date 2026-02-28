@@ -1,0 +1,13 @@
+.page {
+  padding: 16px 0;
+}
+
+.mobileAddBook {
+  margin-top: 16px;
+}
+
+@media (min-width: 768px) {
+  .mobileAddBook {
+    display: none;
+  }
+}
