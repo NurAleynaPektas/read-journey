@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
+
 import { clearAuth } from "../features/auth/authSlice";
 import s from "./Header.module.css";
 
