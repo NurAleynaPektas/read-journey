@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
-import { getRecommendedBooks } from "../api/books";
+import { getRecommendedBooks, addRecommendedBook } from "../api/books";
 import s from "./RecommendedBooks.module.css";
 
 export default function RecommendedBooks() {
@@ -10,6 +10,7 @@ export default function RecommendedBooks() {
   const limit = 8;
 
   const [loading, setLoading] = useState(false);
+  const [addingId, setAddingId] = useState(null);
   const [books, setBooks] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -22,8 +23,7 @@ export default function RecommendedBooks() {
         const data = await getRecommendedBooks({ page, limit });
 
         if (!alive) return;
-console.log("RECOMMEND RESPONSE:", data);
-console.log("FIRST BOOK:", data?.results?.[0]);
+
         setBooks(Array.isArray(data?.results) ? data.results : []);
         setTotalPages(Number(data?.totalPages) || 1);
       } catch (err) {
@@ -42,10 +42,35 @@ console.log("FIRST BOOK:", data?.results?.[0]);
     }
 
     run();
+
     return () => {
       alive = false;
     };
   }, [page]);
+
+  const handleAdd = async (id) => {
+    setAddingId(id);
+    try {
+      await addRecommendedBook(id);
+
+      iziToast.success({
+        title: "Success",
+        message: "Book added to library",
+        position: "topRight",
+      });
+
+      window.dispatchEvent(new Event("rj:library-updated"));
+    } catch (err) {
+      iziToast.error({
+        title: "Error",
+        message:
+          err?.response?.data?.message || err?.message || "Failed to add book",
+        position: "topRight",
+      });
+    } finally {
+      setAddingId(null);
+    }
+  };
 
   const prevDisabled = page === 1 || loading;
   const nextDisabled = page === totalPages || loading;
@@ -95,6 +120,15 @@ console.log("FIRST BOOK:", data?.results?.[0]);
                   <p className={s.bookTitle}>{b.title}</p>
                   <p className={s.bookAuthor}>{b.author}</p>
                 </div>
+              </button>
+
+              <button
+                type="button"
+                className={s.addBtn}
+                onClick={() => handleAdd(b._id)}
+                disabled={addingId === b._id}
+              >
+                {addingId === b._id ? "Adding..." : "Add to library"}
               </button>
             </li>
           ))}

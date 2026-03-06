@@ -13,3 +13,7 @@ export async function getRecommendedBooks({
   const { data } = await api.get("/books/recommend", { params });
   return data;
 }
+export async function addRecommendedBook(id) {
+  const { data } = await api.post(`/books/add/${id}`);
+  return data;
+}
