@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
-
 import { getRecommendedBooks, addRecommendedBook } from "../api/books";
+import BookModal from "./BookModal";
 import s from "./RecommendedBooks.module.css";
 
 export default function RecommendedBooks() {
@@ -13,6 +13,7 @@ export default function RecommendedBooks() {
   const [addingId, setAddingId] = useState(null);
   const [books, setBooks] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedBook, setSelectedBook] = useState(null);
 
   useEffect(() => {
     let alive = true;
@@ -28,6 +29,7 @@ export default function RecommendedBooks() {
         setTotalPages(Number(data?.totalPages) || 1);
       } catch (err) {
         if (!alive) return;
+
         iziToast.error({
           title: "Error",
           message:
@@ -50,6 +52,7 @@ export default function RecommendedBooks() {
 
   const handleAdd = async (id) => {
     setAddingId(id);
+
     try {
       await addRecommendedBook(id);
 
@@ -109,13 +112,18 @@ export default function RecommendedBooks() {
         <ul className={s.grid}>
           {books.map((b) => (
             <li key={b._id} className={s.card}>
-              <button type="button" className={s.cardBtn}>
+              <button
+                type="button"
+                className={s.cardBtn}
+                onClick={() => setSelectedBook(b)}
+              >
                 <img
                   className={s.coverImg}
                   src={b.imageUrl}
                   alt={b.title}
                   loading="lazy"
                 />
+
                 <div className={s.meta}>
                   <p className={s.bookTitle}>{b.title}</p>
                   <p className={s.bookAuthor}>{b.author}</p>
@@ -134,6 +142,12 @@ export default function RecommendedBooks() {
           ))}
         </ul>
       )}
+
+      <BookModal
+        book={selectedBook}
+        onClose={() => setSelectedBook(null)}
+        onAdd={handleAdd}
+      />
     </div>
   );
 }
