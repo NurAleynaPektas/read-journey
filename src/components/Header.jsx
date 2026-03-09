@@ -2,23 +2,28 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
+import { signOut } from "../api/auth";
 import { clearAuth } from "../features/auth/authSlice";
 import s from "./Header.module.css";
 
 export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((s) => s.auth.user);
+  const user = useSelector((state) => state.auth.user);
   const [open, setOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await signOut();
     } catch (err) {
       console.error(err);
     } finally {
+      localStorage.removeItem("rj_token");
+      localStorage.removeItem("rj_refreshToken");
+
       dispatch(clearAuth());
-      navigate("/login");
+      setOpen(false);
+      navigate("/login", { replace: true });
     }
   };
 
@@ -27,15 +32,26 @@ export default function Header() {
       <div className={s.inner}>
         <div className={s.logo}>READ JOURNEY</div>
 
-        {/* RIGHT SIDE */}
         <div className={s.right}>
-          <div className={s.userCircle}>{user?.name?.charAt(0) || "U"}</div>
+          <div className={s.userCircle}>
+            {user?.name?.charAt(0)?.toUpperCase() || "U"}
+          </div>
 
-          <button className={s.logoutDesktop} onClick={handleLogout}>
+          <button
+            type="button"
+            className={s.logoutDesktop}
+            onClick={handleLogout}
+          >
             Log out
           </button>
 
-          <button className={s.burger} onClick={() => setOpen((v) => !v)}>
+          <button
+            type="button"
+            className={s.burger}
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+          >
             ☰
           </button>
         </div>
@@ -61,7 +77,11 @@ export default function Header() {
             My library
           </NavLink>
 
-          <button className={s.logoutMobile} onClick={handleLogout}>
+          <button
+            type="button"
+            className={s.logoutMobile}
+            onClick={handleLogout}
+          >
             Log out
           </button>
         </nav>

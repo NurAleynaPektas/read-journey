@@ -6,10 +6,13 @@ export async function signUp({ name, email, password }) {
 }
 
 export async function signIn({ email, password }) {
-  const { data } = await api.post("/users/signin", { email, password });
-  return data;
+  try {
+    const { data } = await api.post("/users/signin", { email, password });
+    return data;
+  } catch (error) {
+    throw error;
+  }
 }
-
 export async function signOut() {
   const { data } = await api.post("/users/signout");
   return data;

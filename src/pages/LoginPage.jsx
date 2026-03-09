@@ -31,8 +31,12 @@ export default function LoginPage() {
 
   const handleSubmit = async (values, actions) => {
     setLoading(true);
+
     try {
-      const data = await signIn(values);
+      const data = await signIn({
+        email: values.email.toLowerCase(),
+        password: values.password,
+      });
 
       const token = data?.token;
       const refreshToken = data?.refreshToken;
